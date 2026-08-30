@@ -1,147 +1,65 @@
-# FlyRank ML Internship — Starter Repo
+1. Title + Abstract (and Introduction)
 
-**Applied Search Intelligence: Google Search Ranking & Discoverability**
+Prioritizing SEO Content Refreshes: A Predictive Ranking Model for Action Queues
+Abstract
+Content teams often struggle to prioritize which aging articles to refresh under strict review budgets. This project develops a machine learning ranking model to identify high-potential declining content. Using a robust client-grouped validation split to prevent data leakage, a Random Forest Regressor was trained on historical SEO metadata (e.g., impressions, average position). The model successfully outperformed a naive baseline, effectively ranking pages that require immediate attention. This playbook serves as a directional, decision-support tool rather than an automated publishing system.
 
-This is the starting point for the FlyRank ML Internship. You **clone it into your own public
-repo** (one click — *Use this template*), build everything there, and submit that repo URL on
-each assignment in your portal — it's your workspace, your submission, and your portfolio all
-at once. The rhythm is simple: do the work, commit it, submit on the card. Done.
+Introduction / Problem Statement
+Organic search traffic decays over time. When a team can only manually review a limited number of pages (e.g., 50 pages a month), the order of the review queue is critical. A model that nobody acts on is just a science project; therefore, the goal of this research is to build a ranked action queue that maximizes the impact of human editorial time.
 
-Everything here runs on a small **anonymized** slice of real FlyRank search data. No credentials,
-no private client data, no setup headaches.
+2. Data
 
-> **New here?** Two reads: **[SETUP.md](SETUP.md)** (GitHub, Colab, and data access — ten
-> minutes, with every silent pitfall flagged), then **[GUIDE.md](GUIDE.md)** (every file
-> explained, what to edit vs. leave alone, and where your own work goes — five minutes).
+Data
+The model was built using an anonymized subset of real production search data.
 
----
+Included Features: Safe, historical metrics such as search_volume, competition, avg_position, and content_age_days.
 
-## Quickstart — first win in 2 minutes
+Exclusions for Public Safety & Leakage: Client names, URLs, and private queries were strictly excluded. Furthermore, downstream metrics like sessions_90d and pageviews_90d were dropped from the feature set to prevent target leakage, as they occur alongside or after the target variable (clicks_90d).
 
-The fastest path is Google Colab (one click, zero install). Open Notebook 1 and run all cells:
+3. Methodology
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mohamed0449/flyrank-ml-internship/blob/main/notebooks/01_first_look_and_discovery.ipynb?flush_cache=true)
- **Week 1 — Run it, then discover a real truth yourself**
+Methodology
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mohamed0449/flyrank-ml-internship/blob/main/notebooks/02_your_first_readable_model.ipynb?flush_cache=true)
- **Week 2 — The model is just a rule you can read**
+Algorithm: Random Forest Regressor was chosen for its robustness against non-linear relationships.
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mohamed0449/flyrank-ml-internship/blob/main/notebooks/03_working_with_the_full_release.ipynb?flush_cache=true)
- **Weeks 3+ — The full release (~79M rows) via DuckDB, no download needed** — hosted at
- [`FlyRank/internship-warehouse`](https://huggingface.co/datasets/FlyRank/internship-warehouse) (gated: request access + accept the data-use terms, approval is instant)
+Validation Design: A naive random split (e.g., train_test_split) yielded artificially optimistic results due to client-data memorization. To ensure an honest evaluation, a GroupShuffleSplit on client_id was strictly enforced. This guarantees the model is evaluated on its ability to generalize to unseen clients.
 
----
+Baseline: The model was evaluated against a simple Mean Predictor (Dummy Regressor) on the exact same grouped split.
 
-## Your assignment notebooks — open, fill, save, done
+4. Results (vs baseline)
 
-Every assignment is one pre-named skeleton notebook in `work/notebooks/`. Click its badge,
-fill the sections in order, then **File → Save a copy in GitHub → OK** — the dialog is
-already pre-filled with your repo and the right path.
+Results
+Under the strict client-grouped split, the Random Forest model achieved a lower Mean Absolute Error (MAE) compared to the naive mean baseline. While a random split previously showed a near-perfect (but misleading) score, the grouped split provided a realistic, measured expectation of performance on new data.
+(Note: You can insert your generated matplotlib charts or tables here if you want to display the visual difference).
 
-> **The badges know whose repo they're in.** About 30 seconds after you create your copy, an
-> automatic commit ("Point Colab badges at this copy") rewires every badge in it to open
-> **your** notebooks — with your saved work — instead of the shared read-only ones. Reading
-> this on the shared starter page? The badges below open blank previews; make your copy
-> first ([SETUP.md](SETUP.md), Moment 1).
+5. Limitations & Honest Framing
 
-| Week | Card | Notebook | Open |
-|---|---|---|---|
-| 1 | ML-02 | `w01_research_question` | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mohamed0449/flyrank-ml-internship/blob/main/work/notebooks/w01_research_question.ipynb?flush_cache=true) |
-| 2 | ML-03 | `w02_ml_task_framing` | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mohamed0449/flyrank-ml-internship/blob/main/work/notebooks/w02_ml_task_framing.ipynb?flush_cache=true) |
-| 3 | ML-04 | `w03_data_contract` | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mohamed0449/flyrank-ml-internship/blob/main/work/notebooks/w03_data_contract.ipynb?flush_cache=true) |
-| 3 | ML-05 | `w03_feature_leakage_check` | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mohamed0449/flyrank-ml-internship/blob/main/work/notebooks/w03_feature_leakage_check.ipynb?flush_cache=true) |
-| 4 | ML-06 | `w04_signal_audit` | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mohamed0449/flyrank-ml-internship/blob/main/work/notebooks/w04_signal_audit.ipynb?flush_cache=true) |
-| 4 | ML-07 | `w04_baseline_score` | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mohamed0449/flyrank-ml-internship/blob/main/work/notebooks/w04_baseline_score.ipynb?flush_cache=true) |
-| 5 | ML-08 | `w05_model` | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mohamed0449/flyrank-ml-internship/blob/main/work/notebooks/w05_model.ipynb?flush_cache=true) |
-| 6 | ML-09 | `w06_validation_audit` | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mohamed0449/flyrank-ml-internship/blob/main/work/notebooks/w06_validation_audit.ipynb?flush_cache=true) |
-| 7 | ML-10 | `w07_action_playbook` | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mohamed0449/flyrank-ml-internship/blob/main/work/notebooks/w07_action_playbook.ipynb?flush_cache=true) |
-| 8 | ML-11 | `capstone` | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mohamed0449/flyrank-ml-internship/blob/main/work/notebooks/capstone.ipynb?flush_cache=true) |
+Limitations
 
-Badges not opening *your* copy? Colab's built-in opener always works: **File → Open notebook
-→ GitHub tab** → paste `github.com/you/your-repo` → pick the notebook.
+Predictive, Not Causal: This model observes correlations between metrics (like position and clicks) but does not prove that updating a specific feature will cause a traffic recovery.
 
-### Prefer local?
+Time-Window Limits: The evaluation was conducted on a single time-window snapshot. Continuous monitoring and retraining are required to account for major Google Algorithm updates.
 
-```bash
-git clone <this-repo-url>
-cd flyrank-ml-internship-starter
-pip install -r requirements.txt          # or: uv pip install -r requirements.txt
-python scripts/run_all.py
-```
+No Content Context: The model reads metadata, not the actual written text. It cannot judge brand safety or tone.
 
-That runs the whole pipeline on the bundled sample and writes results to `outputs/`.
+6. Ranked Recommendations (Action Playbook)
 
----
+Ranked Recommendations
+The model's output is transformed into a human-in-the-loop playbook with the following ranked reason codes:
 
-## What you get
+REFRESH_HIGH_POTENTIAL: High search volume, poor position, content older than 365 days. Action: Send to editor for rewrite.
 
-| Path | What it is |
-|---|---|
-| `notebooks/` | Week 1–2 **first-win notebooks** (Colab-ready). Start here. |
-| `scripts/01–05` + `run_all.py` | The runnable reference pipeline: prepare → baseline → train → evaluate → PDF. |
-| `data/raw/content_refresh_anonymized.csv` | The anonymized starter dataset (~30k pages). |
-| `outputs/` | Example outputs so you can see the **target shape** (`model_report.md`, `refresh_queue_sample.csv`, `charts/`). |
-| `work/` | **Your space.** Lane experiments and your capstone live here — see `work/README.md`. |
-| `docs/` | The core docs + the data dictionary (see below). |
+MONITOR_DECAY: Content aging past 180 days with slight dips. Action: Hold and observe next month's queue.
 
-### Read these (in `docs/`)
+Guardrails: Automated publishing is strictly prohibited. URLs cannot be redirected without human SEO expert approval.
 
-1. **`ml-core-foundation-framework.md`** — the first-principles map of ML as a whole system. The backbone of the live sessions.
-2. **`ml-intern-dataset-and-lane-guide.md`** — how to use the data safely, the capstone workflow, and the analysis "lanes" you can pick from.
-3. **`intern-free-tooling-guide.md`** — the zero-budget tool stack (Python, Colab, free AI assistants). You never need to pay for anything.
-4. **`data-dictionary.md`** — all 44 columns: meaning, scale, and gotchas. Keep it open while you work.
+7. Reproducibility & Acknowledgments
 
----
+Reproducibility
+All code, methodology, and exported figures are available in the repository. The environment, random seeds (random_state=42), and validation splits are fully documented to allow exact replication of the metrics.
 
-## The pipeline (what `run_all.py` does)
+Repository Link: https://github.com/mohamed0449/flyrank-ml-internship
 
-```text
-01_prepare_features.py   clean + build the feature vector, define the label
-02_baseline_score.py     a transparent hand-rule "fix this first" score
-03_train_model.py        logistic regression, decision tree, random forest (client-holdout split)
-04_evaluate_and_export.py  ranked queue + charts + Markdown report
-05_build_pdf_report.py   a shareable PDF summary
-```
-
-On the bundled sample, the learned model clearly beats the hand-written rule at picking the right
-pages to review first (**Precision@50 ≈ 0.24 → 0.74**; the model number can land 0.68–0.74
-depending on library versions — the ~3x lift is the point). The notebooks compute these numbers
-live, so they always reflect the current data and environment.
-
-**Teaching point:** the model is the capstone, but the *workflow* is the lesson —
-`problem framing → data cleaning → baseline → first model → evaluation → explainable recommendation`.
-
----
-
-## Data safety (read `DATA_USE.md`)
-
-- Only the small **anonymized** CSV ships here — no client names, domains, URLs, titles, or keywords.
-- **Never** add raw private client data to this repo or your fork. Need more data? Request an approved
-  release from your mentor — never export it yourself.
-- Don't paste client data into third-party AI tools.
-- Frame every result as **observed / measured / directional / decision-support** — never
-  "I predicted Google's algorithm."
-
-The `.gitignore` blocks datasets by default, and CI fails any commit that includes a dataset.
-
----
-
-## Assignments & schedule
-
-Weekly assignments, live events, and the capstone live on **your portal board** (your
-enrollment email has your access link). This repo is the shared technical foundation they all
-build on — and the `skills/` folder here is the instruction library for your AI assistant
-(start at [skills/README.md](skills/README.md)).
-
-**First time with GitHub?** You need exactly four things (full walkthrough: [SETUP.md](SETUP.md)):
-1. A free account at github.com.
-2. Your own copy of this repo: **Use this template → Create a new repository** → public.
-   (One click — brings the notebooks, `work/`, and the CI leak-guard with it.)
-3. In Colab: *File → Save a copy in GitHub* — opened from your copy's badges, the dialog is
-   already pre-filled with your repo and path, so it's just OK (Colab handles auth).
-4. That's your submission repo — share its **github.com/you/your-repo** URL with Assignment 1
-   (never a colab.research.google.com or drive.google.com link).
-
----
-
-*Track leads: Mirza Ašćerić (ML) · Hole (data engineering). Code under MIT (see `LICENSE`); data under `DATA_USE.md`.*
+Acknowledgments & Data Credit
+This research and model were built on the FlyRank ML Internship dataset. Special thanks to the FlyRank team for the mentorship.
+Dataset and program details: https://flyrank.ai
